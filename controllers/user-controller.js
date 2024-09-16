@@ -3,7 +3,7 @@ const db = require('../models')
 const { User } = db
 const userController = {
   signUpPage: (req, res) => {
-    res.render('signup')
+    res.render('/signup')
   },
   signUp: (req, res, next) => { // 修改這裡
     // 如果兩次輸入的密碼不同，就建立一個 Error 物件並拋出
@@ -22,7 +22,7 @@ const userController = {
       }))
       .then(() => {
         req.flash('success_messages', '成功註冊帳號！') // 並顯示成功訊息
-        res.redirect('/signin')
+        res.redirect('signin')
       })
       .catch(err => next(err)) // 接住前面拋出的錯誤，呼叫專門做錯誤處理的 middleware
   },
