@@ -4,7 +4,7 @@ const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const adminController = {
   getUsers: (req, res, next) => {
-    User.findAll({
+    return User.findAll({
       raw: true,
       nest: true,
       attributes: ['id', 'name', 'email', 'password', 'isAdmin', 'createdAt', 'updatedAt']
@@ -18,21 +18,19 @@ const adminController = {
   patchUser: (req, res, next) => {
     console.log(`接收到 PATCH 請求，使用者 ID：${req.params.id}`)
 
-    User.findByPk(req.params.id)
+    return User.findByPk(req.params.id)
       .then(user => {
-        console.log(user) // 檢查 user 是否正確返回
         if (!user) throw new Error('User not found!')
-        console.log(`當前使用者 isAdmin 狀態：${user.isAdmin}`)
         if (user.email === 'root@example.com') {
-          req.flash('error_messages', 'You cannot change root privileges!')
+          req.flash('error_messages', '禁止變更 root 權限')
           return res.redirect('back')
         }
         return user.update({ isAdmin: !user.isAdmin })
       })
       .then(updatedUser => {
         console.log(`新的使用者 isAdmin 狀態：${updatedUser.isAdmin}`)
-        req.flash('success_messages', 'User privileges updated successfully!')
-        res.redirect('/admin/users')
+        req.flash('success_messages', '使用者權限變更成功')
+        return res.redirect('/admin/users')
       })
       .catch(err => {
         console.error('更新使用者權限時出錯：', err)
