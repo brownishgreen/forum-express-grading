@@ -1,16 +1,13 @@
 const express = require('express')
 const router = express.Router()
-const admin = require('./modules/admin')
 
 const restController = require('../controllers/restaurant-controller')
 const userController = require('../controllers/user-controller')
+const admin = require('./modules/admin')
 const { authenticated, authenticatedAdmin } = require('../middleware/auth')
 const { generalErrorHandler } = require('../middleware/error-handler')
 const passport = require('passport')
-const adminController = require('../controllers/admin-controller')
 
-router.get('/admin/users', authenticatedAdmin, adminController.getUsers)
-router.patch('/admin/users/:id', authenticatedAdmin, adminController.patchUser)
 router.use('/admin', authenticatedAdmin, admin)
 
 router.get('/signup', userController.signUpPage)
@@ -20,5 +17,6 @@ router.post('/signin', passport.authenticate('local', { failureRedirect: '/signi
 router.get('/logout', userController.logout)
 router.get('/restaurants', authenticated, restController.getRestaurants)
 router.get('/', (req, res) => res.redirect('/restaurants'))
-router.use('/', generalErrorHandler) // 加入這行
+router.use('/', generalErrorHandler)
+
 module.exports = router
