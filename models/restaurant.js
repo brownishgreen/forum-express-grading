@@ -14,7 +14,12 @@ module.exports = (sequelize, DataTypes) => {
     address: DataTypes.STRING,
     openingHours: DataTypes.STRING,
     description: DataTypes.TEXT,
-    image: DataTypes.STRING
+    image: DataTypes.STRING,
+    viewCounts: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0, // 預設值
+      allowNull: false
+    }
   }, {
     sequelize,
     modelName: 'Restaurant',
