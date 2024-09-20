@@ -44,9 +44,10 @@ const restaurantController = {
     })
       .then(restaurant => {
         if (!restaurant) throw new Error('Restaurant did not exist!')
-        res.render('restaurant', {
-          restaurant: restaurant.toJSON()
-        })
+        return restaurant.increment('viewCounts')
+      })
+      .then(restaurant => {
+        res.render('restaurant', { restaurant: restaurant.toJSON() })
       })
       .catch(err => next(err))
   },
@@ -58,8 +59,7 @@ const restaurantController = {
     })
       .then(restaurant => {
         if (!restaurant) throw new Error('Restaurant not found!')
-        return Restaurant.increment('viewCounts', { where: { id: req.params.id } })
-          .then(() => res.render('dashboard', { restaurant }))
+        res.render('dashboard', { restaurant })
       })
       .catch(err => next(err))
   }
