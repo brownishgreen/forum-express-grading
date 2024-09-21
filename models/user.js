@@ -20,7 +20,8 @@ module.exports = (sequelize, DataTypes) => {
     isAdmin: {
       type: DataTypes.BOOLEAN,
       field: 'is_admin' // 將 Sequelize 模型的 isAdmin 映射到資料庫中的 is_admin
-    }
+    },
+    image: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'User',

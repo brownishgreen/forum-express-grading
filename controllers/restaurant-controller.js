@@ -25,7 +25,6 @@ const restaurantController = {
           ...r,
           description: r.description.substring(0, 50)
         }))
-        console.log(categories)
         return res.render('restaurants', {
           restaurants: data,
           categories,
