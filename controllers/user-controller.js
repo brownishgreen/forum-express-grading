@@ -3,7 +3,7 @@ const { User, Restaurant, Favorite, Like, Followship } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 const userController = {
   signUpPage: (req, res) => {
-    res.render('/signup')
+    res.render('signup')
   },
   signUp: (req, res, next) => { // 修改這裡
     // 如果兩次輸入的密碼不同，就建立一個 Error 物件並拋出
@@ -89,10 +89,12 @@ const userController = {
         if (!restaurant) throw new Error('Restaurant did not exist!')
         if (favorite) throw new Error('You have favorited this restaurant!')
 
-        return Favorite.create({
-          userId: req.user.id,
-          restaurantId
-        })
+        return Promise.all([
+          Favorite.create({
+            userId: req.user.id,
+            restaurantId
+          }), Restaurant.increment('favoritedCount', { where: { id: restaurantId } })
+        ])
       })
       .then(() => res.redirect('back'))
       .catch(err => next(err))
@@ -112,7 +114,10 @@ const userController = {
         if (!restaurant) throw new Error('Restaurant did not exist!')
         if (!favorite) throw new Error('You have not favorite this restaurant!')
 
-        return favorite.destroy()
+        return Promise.all([
+          favorite.destroy(),
+          Restaurant.decrement('favoritedCount', { where: { id: restaurantId } })
+        ])
       })
       .then(() => res.redirect('back'))
       .catch(err => next(err))
